@@ -55,7 +55,7 @@ async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
                 'type': 'photo',
                 'width': photo.sizes[-1].w,
                 'height': photo.sizes[-1].h,
-                'size': photo.sizes[-1].size,
+                # 'size': photo.sizes[-1].size,
             }
             message_data['photo'] = photo_data
             message_data['media__telegram_id'] = photo.id
