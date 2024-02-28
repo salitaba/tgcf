@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    volumes:
+      - .:/app
+    environment:
+      MONGO_CON_STR: "mongodb://root:password@f67b8bca-3759-45fd-b451-c7d777557de3.hsvc.ir:30306"
+
+    restart: always
+#    command: ["poetry build && /venv/bin/pip install --upgrade pip wheel setuptools && /venv/bin/pip install dist/*.whl","tgcf-web"]
