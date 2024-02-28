@@ -4,6 +4,7 @@ import logging
 import os
 import sys
 from typing import Union
+import requests
 
 from telethon import TelegramClient, events, functions, types
 from telethon.sessions import StringSession
@@ -15,6 +16,7 @@ from tgcf.bot import get_events
 from tgcf.config import CONFIG, get_SESSION
 from tgcf.plugins import apply_plugins, load_async_plugins
 from tgcf.utils import clean_session_files, send_message
+from .MinioUploader import MinioUploader
 
 
 async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
@@ -25,6 +27,44 @@ async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
         return
     logging.info(f"New message received in {chat_id}")
     message = event.message
+
+    message_data = {
+        'telegram_id': event.message.peer_id.channel_id,
+        'post_id': event.message.id,
+        'text': event.message.message,
+        'date': event.message.date.isoformat(),
+        'type': 'text',
+        'photo': None,
+        'view_count': event.message.views,
+    }
+
+    # Check if media in the message is a photo
+
+    if event.message.media and hasattr(event.message.media, 'photo'):
+        photo = event.message.media.photo
+        file_name = await event.client.download_media(photo, file=f'{photo.id}')
+
+        minio_client = MinioUploader(file_name)
+        result = minio_client.upload_to_minio(have_thumbnail=True)
+
+        logging.info(f"result {result}")
+        if result:
+            photo_data = {
+                'id': f"{photo.id}",
+                'thumb': f"{photo.id}.thumb_411",
+                'type': 'photo',
+                'width': photo.sizes[-1].w,
+                'height': photo.sizes[-1].h,
+                'size': photo.sizes[-1].size,
+            }
+            message_data['photo'] = photo_data
+            message_data['media__telegram_id'] = photo.id
+            message_data['type'] = "photo"
+
+    message_create_url = os.getenv("MESSAGE_CREATE_URL", "localhost")
+    response = requests.post(message_create_url, data=message_data)
+
+    logging.info(f"message_data {message_data},status: {response.status_code}")
 
     event_uid = st.EventUid(event)
 

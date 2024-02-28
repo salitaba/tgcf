@@ -189,6 +189,7 @@ async def load_from_to(
     async def _(peer):
         return await get_id(client, peer)
 
+    logging.info(f"forwards are :  {forwards}")
     for forward in forwards:
         if not forward.use_this:
             continue
