@@ -8,7 +8,7 @@ RUN apt-get update && \
     apt-get install ffmpeg tesseract-ocr -y && \
     apt-get autoclean
 RUN pip install --upgrade poetry
-RUN pip install -r requirements.text
+RUN pip install minio==7.2.4 pillow==10.2.0
 RUN python -m venv /venv
 COPY . .
 RUN poetry build && \
