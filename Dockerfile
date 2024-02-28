@@ -8,11 +8,11 @@ RUN apt-get update && \
     apt-get install ffmpeg tesseract-ocr -y && \
     apt-get autoclean
 RUN pip install --upgrade poetry
-RUN pip install minio==7.2.4 pillow==10.2.0 requests==2.31.0
 RUN python -m venv /venv
 COPY . .
 RUN poetry build && \
     /venv/bin/pip install --upgrade pip wheel setuptools &&\
-    /venv/bin/pip install dist/*.whl
+    /venv/bin/pip install dist/*.whl && \
+    /venv/bin/pip install minio==7.2.4 pillow==10.2.0 requests==2.31.0
 EXPOSE 8501
 CMD tgcf-web
