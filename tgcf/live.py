@@ -31,12 +31,14 @@ async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
     message_data = {
         'telegram_id': event.message.peer_id.channel_id,
         'post_id': event.message.id,
-        'text': event.message.message,
         'date': event.message.date.isoformat(),
         'type': 'text',
         'photo': None,
         'view_count': event.message.views,
     }
+    if len(f"{event.message.message}") > 0:
+        message_data['text'] = event.message.message,
+
 
     # Check if media in the message is a photo
 
