@@ -89,11 +89,11 @@ async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
         r_event_uid = st.EventUid(r_event)
 
     st.stored[event_uid] = {}
-    for d in dest:
-        if event.is_reply and r_event_uid in st.stored:
-            tm.reply_to = st.stored.get(r_event_uid).get(d)
-        fwded_msg = await send_message(d, tm)
-        st.stored[event_uid].update({d: fwded_msg})
+    # for d in dest:
+    #     if event.is_reply and r_event_uid in st.stored:
+    #         tm.reply_to = st.stored.get(r_event_uid).get(d)
+    #     fwded_msg = await send_message(d, tm)
+    #     st.stored[event_uid].update({d: fwded_msg})
     tm.clear()
 
 
