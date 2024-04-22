@@ -9,7 +9,7 @@ import requests
 from telethon import TelegramClient, events, functions, types
 from telethon.sessions import StringSession
 from telethon.tl.custom.message import Message
-
+import datetime
 from tgcf import config, const
 from tgcf import storage as st
 from tgcf.bot import get_events
@@ -26,6 +26,9 @@ async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
     if chat_id not in config.from_to:
         return
     logging.info(f"New message received in {chat_id}")
+    current_datetime = datetime.datetime.now()
+    logging.info(f"current_datetime {current_datetime}")
+
     message = event.message
 
     message_data = {
