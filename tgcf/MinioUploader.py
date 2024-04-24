@@ -24,11 +24,11 @@ class MinioUploader:
         for file_name in file_names:
             try:
                 result = self.minio_client.fput_object(bucket_name=self.bucket_name,
-                                                  object_name=self.file_path + f"/{file_name}",
-                                                  file_path=f"{file_name}")
+                                                       object_name=self.file_path + f"/{file_name}",
+                                                       file_path=f"{file_name}")
                 logging.info(f"Image {self.filename} uploaded to Minio CDN.")
-            except S3Error as e:
-                return False
+            except Exception as e:
+                logging.info(f"{e}")
 
         for files in file_names:
             if os.path.exists(f"{files}"):
@@ -61,4 +61,3 @@ class MinioUploader:
             logging.info(Error)
 
         return pictures_name
-
