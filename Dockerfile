@@ -18,4 +18,4 @@ RUN poetry build && \
     /venv/bin/pip install dist/*.whl && \
     /venv/bin/pip install minio==7.2.4 pillow==10.2.0 requests==2.31.0 Telethon==1.35.0
 EXPOSE 8501
-CMD $TGCF_COMMAND
+CMD ["sh", "-c", "$TGCF_COMMAND"]

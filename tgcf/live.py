@@ -154,7 +154,7 @@ async def deleted_message_handler(event):
 
 ALL_EVENTS = {
     "new": (new_message_handler, events.NewMessage()),
-    # "edited": (edited_message_handler, events.MessageEdited()),
+    "edited": (edited_message_handler, events.MessageEdited()),
     # "deleted": (deleted_message_handler, events.MessageDeleted()),
 }
 
