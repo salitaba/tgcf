@@ -16,6 +16,6 @@ COPY . .
 RUN poetry build && \
     /venv/bin/pip install --upgrade pip wheel setuptools && \
     /venv/bin/pip install dist/*.whl && \
-    /venv/bin/pip install minio==7.2.4 pillow==10.2.0 requests==2.31.0
+    /venv/bin/pip install minio==7.2.4 pillow==10.2.0 requests==2.31.0 Telethon==1.35.0
 EXPOSE 8501
-CMD tgcf-web
+CMD $TGCF_COMMAND

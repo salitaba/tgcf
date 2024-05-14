@@ -163,6 +163,7 @@ async def start_sync() -> None:
     """Start tgcf live sync."""
     # clear past session files
     clean_session_files()
+    print("hello2")
 
     # load async plugins defined in plugin_models
     await load_async_plugins()
