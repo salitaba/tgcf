@@ -31,7 +31,17 @@ class MinioUploader:
                                                        file_path=f"{file_name}")
                 logging.info(f"Image {self.filename} uploaded to Minio CDN.")
             except Exception as e:
-                logging.info(f"{e}")
+                try:
+                    self.minio_client = Minio(
+                        endpoint=os.getenv("MINIO_URL2"),
+                        access_key=os.getenv("MINIO_ACCESS_KEY"),
+                        secret_key=os.getenv("MINIO_SECRET_KEY"))
+                    result = self.minio_client.fput_object(bucket_name=self.bucket_name,
+                                                           object_name=self.file_path + f"/{file_name}",
+                                                           file_path=f"{file_name}")
+                    logging.info(f"Image {self.filename} uploaded to Minio CDN.")
+                except Exception as e:
+                    logging.info(f"{e}")
 
         for files in file_names:
             if os.path.exists(f"{files}"):
