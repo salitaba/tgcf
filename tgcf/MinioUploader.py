@@ -1,3 +1,4 @@
+import datetime
 import io
 from typing import Union
 from minio import Minio
@@ -19,6 +20,8 @@ class MinioUploader:
         self.filename = filename
 
     def upload_to_minio(self, have_thumbnail) -> bool:
+        current_datetime = datetime.datetime.now()
+        logging.info(f"upload_start_datetime {current_datetime}")
         result = None
         file_names = self.get_file_names(have_thumbnail)
         for file_name in file_names:
