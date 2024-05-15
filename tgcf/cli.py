@@ -130,7 +130,7 @@ def main(
         while True:
             if should_run_function_today():
                 now = datetime.datetime.now()
-                if os.getenv("PAST_START_TIME", 9) <= now.hour < os.getenv("PAST_END_TIME", 15):  # Check if the current hour is between 9 and 14 (3 PM)
+                if int(os.getenv("PAST_START_TIME", 9)) <= now.hour < int(os.getenv("PAST_END_TIME", 15)):  # Check if the current hour is between 9 and 14 (3 PM)
                     logging.info("forward_job started for last one day messages")
                     asyncio.run(forward_job())
                     last_execution_date = datetime.date.today()
