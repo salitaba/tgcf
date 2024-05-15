@@ -17,7 +17,7 @@ from tgcf.config import CONFIG, get_SESSION
 from tgcf.plugins import apply_plugins, load_async_plugins
 from tgcf.utils import clean_session_files, send_message
 from .MinioUploader import MinioUploader
-
+from telethon.network.mtprotostate import MSG_TOO_OLD_DELTA
 
 async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
     """Process new incoming messages."""
@@ -28,6 +28,8 @@ async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
     logging.info(f"New message received in {chat_id}")
     current_datetime = datetime.datetime.now()
     logging.info(f"current_datetime {current_datetime}")
+    print(MSG_TOO_OLD_DELTA)
+
 
     message = event.message
 
@@ -67,7 +69,7 @@ async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
             message_data['type'] = "photo"
 
     message_create_url = os.getenv("MESSAGE_CREATE_URL", "localhost")
-    response = requests.post(message_create_url, data=message_data)
+    response = requests.post(message_create_url, data=message_data, timeout=60)
 
     logging.info(f"message_data {message_data},status: {response.status_code}")
 
@@ -164,6 +166,7 @@ async def start_sync() -> None:
     # clear past session files
     clean_session_files()
     print("hello2")
+    print(MSG_TOO_OLD_DELTA)
 
     # load async plugins defined in plugin_models
     await load_async_plugins()
