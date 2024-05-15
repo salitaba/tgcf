@@ -23,7 +23,7 @@ if TYPE_CHECKING:
 def platform_info():
     nl = "\n"
     return f"""Running tgcf {__version__}\
-    \nPython {sys.version.replace(nl,"")}\
+    \nPython {sys.version.replace(nl, "")}\
     \nOS {os.name}\
     \nPlatform {platform.system()} {platform.release()}\
     \n{platform.architecture()} {platform.processor()}"""

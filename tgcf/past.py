@@ -7,7 +7,8 @@
 import asyncio
 import logging
 import time
-
+import os
+import requests
 from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import FloodWaitError
 from telethon.tl.custom.message import Message
@@ -15,6 +16,8 @@ from telethon.tl.patched import MessageService
 
 from tgcf import config
 from tgcf import storage as st
+from tgcf.MinioUploader import MinioUploader
+import datetime
 from tgcf.config import CONFIG, get_SESSION, write_config
 from tgcf.plugins import apply_plugins, load_async_plugins
 from tgcf.utils import clean_session_files, send_message
@@ -43,12 +46,56 @@ async def forward_job() -> None:
             last_id = 0
             forward: config.Forward
             logging.info(f"Forwarding messages from {src} to {dest}")
+            date_from = datetime.datetime.now() - datetime.timedelta(days=os.getenv("DURATION", 1))
             async for message in client.iter_messages(
-                src, reverse=True, offset_id=forward.offset
+                src, reverse=True, offset_id=forward.offset, offset_date=date_from
             ):
                 message: Message
                 event = st.DummyEvent(message.chat_id, message.id)
                 event_uid = st.EventUid(event)
+
+                logging.info(f"New message received ")
+                current_datetime = datetime.datetime.now()
+                logging.info(f"current_datetime {current_datetime}")
+
+                message_data = {
+                    'telegram_id': message.peer_id.channel_id,
+                    'post_id': message.id,
+                    'date': message.date.isoformat(),
+                    'type': 'text',
+                    'photo': None,
+                    'view_count': message.views,
+                }
+                if len(f"{message.message}") > 0:
+                    message_data['text'] = message.message,
+
+                # Check if media in the message is a photo
+
+                if message.media and hasattr(message.media, 'photo'):
+                    photo = message.media.photo
+                    file_name = await client.download_media(photo, file=f'{photo.id}')
+
+                    minio_client = MinioUploader(file_name)
+                    result = minio_client.upload_to_minio(have_thumbnail=True)
+
+                    logging.info(f"result {result}")
+                    if result:
+                        photo_data = {
+                            'id': f"{photo.id}",
+                            'thumb': f"{photo.id}.thumb_411",
+                            'type': 'photo',
+                            'width': photo.sizes[-1].w,
+                            'height': photo.sizes[-1].h,
+                            # 'size': photo.sizes[-1].size,
+                        }
+                        message_data['photo'] = photo_data
+                        message_data['media__telegram_id'] = photo.id
+                        message_data['type'] = "photo"
+
+                message_create_url = os.getenv("MESSAGE_CREATE_URL", "localhost")
+                response = requests.post(message_create_url, data=message_data, timeout=60)
+                logging.info(f"message_data {message_data},status: {response.status_code}")
+                logging.info(f"message_created_datetime {current_datetime}")
 
                 if forward.end and last_id > forward.end:
                     continue
@@ -69,7 +116,7 @@ async def forward_job() -> None:
                         if message.is_reply and r_event_uid in st.stored:
                             tm.reply_to = st.stored.get(r_event_uid).get(d)
                         fwded_msg = await send_message(d, tm)
-                        st.stored[event_uid].update({d: fwded_msg.id})
+                        # st.stored[event_uid].update({d: fwded_msg.id})
                     tm.clear()
                     last_id = message.id
                     logging.info(f"forwarding message with id = {last_id}")
