@@ -46,7 +46,7 @@ async def forward_job() -> None:
             last_id = 0
             forward: config.Forward
             logging.info(f"Forwarding messages from {src} to {dest}")
-            date_from = datetime.datetime.now() - datetime.timedelta(days=os.getenv("DURATION", 1))
+            date_from = datetime.datetime.now() - datetime.timedelta(days=int(os.getenv("DURATION", 1)))
             async for message in client.iter_messages(
                 src, reverse=True, offset_id=forward.offset, offset_date=date_from
             ):
