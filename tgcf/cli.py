@@ -132,18 +132,15 @@ def main(
                 now = datetime.datetime.now()
                 if int(os.getenv("PAST_START_TIME", 9)) <= now.hour < int(os.getenv("PAST_END_TIME", 15)):
                     logging.info("forward_job started for last one day messages")
-                    try:
-                        asyncio.run(forward_job())
-                        last_execution_date = datetime.date.today()
-                    except Exception as e:
-                        logging.info(f"tgcf history got exception : {e}")
+                    asyncio.run(forward_job())
+                    last_execution_date = datetime.date.today()
+
             # Sleep for a while before checking again (adjust sleep duration as needed)
-            logging.info("sleep for one hour")
-            time.sleep(60 * 60)
+            else:
+                logging.info("sleep for one hour")
+                time.sleep(60 * 60)
 
     else:
         from tgcf.live import start_sync  # pylint: disable=import-outside-toplevel
 
         asyncio.run(start_sync())
-
-# AAHNIK 2021
