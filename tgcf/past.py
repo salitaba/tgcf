@@ -115,7 +115,7 @@ async def forward_job() -> None:
                     for d in dest:
                         if message.is_reply and r_event_uid in st.stored:
                             tm.reply_to = st.stored.get(r_event_uid).get(d)
-                        fwded_msg = await send_message(d, tm)
+                        # fwded_msg = await send_message(d, tm)
                         # st.stored[event_uid].update({d: fwded_msg.id})
                     tm.clear()
                     last_id = message.id
