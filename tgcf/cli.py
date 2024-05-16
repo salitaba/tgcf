@@ -134,9 +134,9 @@ def main(
                     logging.info("forward_job started for last one day messages")
                     try:
                         asyncio.run(forward_job())
+                        last_execution_date = datetime.date.today()
                     except Exception as e:
                         logging.info(f"tgcf history got exception : {e}")
-                    last_execution_date = datetime.date.today()
             # Sleep for a while before checking again (adjust sleep duration as needed)
             logging.info("sleep for one hour")
             time.sleep(60 * 60)
