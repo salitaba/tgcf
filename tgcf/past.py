@@ -95,7 +95,7 @@ async def forward_job() -> None:
                             message_data['type'] = "photo"
                     try:
                         message_create_url = os.getenv("MESSAGE_CREATE_URL", "localhost")
-                        response = requests.post(message_create_url, json=json.dumps(message_data), timeout=60)
+                        response = requests.post(message_create_url, json=message_data, timeout=60)
                         logging.info(f"message_data {message_data},status: {response.status_code}")
                         logging.info(f"message_created_datetime {current_datetime}")
                     except Exception as e:
