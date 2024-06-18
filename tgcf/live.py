@@ -42,7 +42,7 @@ async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
         'view_count': event.message.views,
     }
     if len(f"{event.message.message}") > 2:
-        message_data['text'] = event.message.message,
+        message_data['text'] = event.message.message
 
 
     # Check if media in the message is a photo
