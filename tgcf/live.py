@@ -1,5 +1,5 @@
 """The module responsible for operating tgcf in live mode."""
-
+import json
 import logging
 import os
 import sys
@@ -41,8 +41,8 @@ async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
         'photo': None,
         'view_count': event.message.views,
     }
-    if len(f"{event.message.message}") > 0:
-        message_data['text'] = event.message.message,
+    if len(f"{event.message.message}") > 4:
+        message_data['text'] = event.message.message[0],
 
 
     # Check if media in the message is a photo
@@ -69,7 +69,7 @@ async def new_message_handler(event: Union[Message, events.NewMessage]) -> None:
             message_data['type'] = "photo"
 
     message_create_url = os.getenv("MESSAGE_CREATE_URL", "localhost")
-    response = requests.post(message_create_url, data=message_data, timeout=60)
+    response = requests.post(message_create_url, json=json.dumps(message_data), timeout=60)
     logging.info(f"message_data {message_data},status: {response.status_code}")
     logging.info(f"message_created_datetime {current_datetime}")
 

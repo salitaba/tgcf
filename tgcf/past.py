@@ -5,6 +5,7 @@
 """
 
 import asyncio
+import json
 import logging
 import time
 import os
@@ -67,8 +68,8 @@ async def forward_job() -> None:
                         'photo': None,
                         'view_count': message.views,
                     }
-                    if len(f"{message.message}") > 0:
-                        message_data['text'] = message.message,
+                    if len(f"{message.message}") > 4:
+                        message_data['text'] = message.message[0],
 
                     # Check if media in the message is a photo
 
@@ -94,7 +95,7 @@ async def forward_job() -> None:
                             message_data['type'] = "photo"
                     try:
                         message_create_url = os.getenv("MESSAGE_CREATE_URL", "localhost")
-                        response = requests.post(message_create_url, data=message_data, timeout=60)
+                        response = requests.post(message_create_url, json=json.dumps(message_data), timeout=60)
                         logging.info(f"message_data {message_data},status: {response.status_code}")
                         logging.info(f"message_created_datetime {current_datetime}")
                     except Exception as e:
