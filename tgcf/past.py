@@ -68,8 +68,8 @@ async def forward_job() -> None:
                         'photo': None,
                         'view_count': message.views,
                     }
-                    if len(f"{message.message}") > 4:
-                        message_data['text'] = message.message[0],
+                    if len(f"{message.message}") > 2:
+                        message_data['text'] = message.message,
 
                     # Check if media in the message is a photo
 
